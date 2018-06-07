@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="" content="">
+  <meta name="" content="">
+  <meta name="2018/5/31" content="">
+  <meta name="Description" content="">
+  <title>网站</title>
+ <!-- <embed src="audio.mp3" hidden="true"  loop="true">-->
+  <style type="text/css">
+	*{	
+	 margin:0;
+	 padding:0;
+	}
+	html{
+	 overflow-y:auto;
+	}
+
+	ul{
+	  list-style:none; 
+	}
+
+	a{
+	  text-decoration:none;
+	}
+
+   #top{
+      width :100%;
+	  height :77px;
+	  margin:10px auto;
+	  background: url(top.jpg)  ;
+	  background-size:contain;
+   }
+  
+   .nav_box {
+   width: 700px;
+   height:48px;
+   float:right;
+   margin-left:10px;
+   }
+	
+	.nav_box ul li{
+	  font-family:"微软雅黑";
+	  line-height:46px;
+	  width:80px;
+	  margin-right:6px;
+	  text-align:center;
+	  float:left;
+	}
+
+	.nav_box ul li a{
+	  color:#cc00ff; 
+	}
+	.nav_box ul li a:hover{
+	  display:block;
+	  /*background-color: ##e2e2e2;*/
+	  color:pink;
+	}
+	
+	/*图片轮播*/
+	#banner{
+	width:100%;
+	height:854px;
+	/*border-top:3px solid ##cc0066;*/
+	margin:20px  auto;
+	background-color:;
+	/*box-shadow: 0 0 5px green;*/
+
+	}
+
+	.banner_imgbox{
+	  width:1290px;
+	  height:854px;
+	  margin:0 auto;
+	  position:relative;
+	  overflow:hidden;
+	}
+
+	.banner_imgbox img{
+	 z-index:1;
+	}
+
+	#list{
+	  height:854px;
+	  position:absolute;
+	  left:0px;
+	}
+
+	.banner_imgbox ul li {
+	  float:left;
+	  margin:0 5px;
+	}
+
+	/*按钮*/
+	#banner .buttons  {
+	  position:absolute;
+	  bottom:10px;
+	  z-index:2;
+	}
+
+	 #banner .buttons span {
+      margin: 0 3px;
+	  float:left;
+	  width: 10px;
+	  height:10px;
+	  border-radius:50%;
+	  cursor:pointer;
+	  background-color:rgba(0,0,0,0.2);
+	}
+	
+	#banner .buttons span:hover{
+	  background-color:black;
+	}
+
+	/*左右箭头*/
+	.arrow{
+	  position:absolute;
+	  color:green;
+	  z-index:2;
+	  padding:0px 14px;
+	  border-radius:50%;
+	  font-size:50px;
+	  top:40%;
+	  display:none;
+	}
+		
+	#arrow_left{
+		left:10px;
+	}
+
+	#arrow_right{
+	  right:10px;
+	}
+	
+	#banner_imgbox:hover .arrow{
+	  display:block;
+	}
+	.arrow:hover{
+	background-color:rgba(0,0,0,0.2);
+	}
+
+	/*视频块*/
+	.video{
+	  margin:100px 0 0  50px;
+	  width:1230px;
+	  height:400px;
+	  display:block;
+	  /*background: url(01.jpg)  ;*/  
+	}
+	
+	.video  ul{
+	 
+	  
+	}
+	.video ul li {
+	  float:left;
+	  margin: 0 5px 5px 0;
+	 
+	  height:300px;
+	  width:300px;
+	}
+	
+	.video ul li video{
+	
+	  width:200px;
+	  height:200px;
+	  background-color:rgba(0,0,0,0.5);
+	}
+
+	.text{
+	  margin:50px 0 ;
+	  text-align:center;
+	}
+
+
+	.audio{
+	   width:300px;
+	   height:150px;
+	  margin:0 auto;
+	}
+  </style>	
+  
+	<script type="text/javascript" >
+	
+		window.onload=function(){
+			//获取Img标签宽度
+			var imgList = document.getElementById("list");
+			var imgArr = imgList.getElementsByTagName("img");
+			imgList.style.width = 1290*imgArr.length+"px";
+
+			//按钮居中
+			var banner_imgbox = document.getElementById("banner_imgbox");
+			var buttons = document.getElementById("buttons");
+			buttons.style.left  = (banner_imgbox.offsetWidth - buttons.offsetWidth) / 2+"px";
+			
+			var index  = 0;
+			var allSpan = buttons.getElementsByTagName("span");
+			allSpan[index].style.backgroundColor = "black";
+			
+			//自动轮播
+			var target =- imgArr.length*1290;
+			move(imgList,target,1290,imgArr,allSpan,index);
+
+			//查看图片 轮播停止
+			enterOrleave(banner_imgbox,imgList,target,imgArr,allSpan,index);
+
+			var index = 0;
+			//左右按钮
+			var arrow_left = document.getElementById("arrow_left")
+			var arrow_right = document.getElementById("arrow_right")
+			
+			//为每一个span 绑定单击响应函数
+			for (var i = 0 ;i<allSpan.length ;i++ )
+			{
+			   allSpan[i].num = i;
+				//绑定单击函数
+				allSpan[i].onclick = function(){
+					index = this.num;
+					imgList.style.left = -1290* index +"px";
+					setSpan(allSpan,index);
+				}
+
+
+				//左按钮
+				arrow_left.onclick = function (){
+				//alert(current);
+				var current = parseInt(getStyle(imgList,"left"));
+				var newLeft = current +1290 ;
+				if (newLeft>0)
+				{
+					 newLeft =- (imgArr.length-2)*1290;
+					// alert(newLeft);
+				}
+					imgList.style.left = newLeft+"px";
+					index--;
+					if (index<0)
+					{
+						index = 4;   //设定span数
+					}
+					setSpan(allSpan,index);
+			    }
+				//右标签
+				arrow_right.onclick = function (){
+				//alert(current);
+				var current = parseInt(getStyle(imgList,"left"));
+				var newLeft = current -1290 ;
+				if (newLeft<-(imgArr.length-2)*1290)
+				{
+					 newLeft =0;
+					// alert(newLeft);
+				}
+					imgList.style.left = newLeft+"px";
+					index++;
+					if (index>4)
+					{
+						index = 0;   //设定span数
+					}
+					setSpan(allSpan,index);
+			    }
+
+			}
+
+		}
+
+
+
+		//轮播函数
+		
+		//speed只有负值 ==>向左移动
+		//target 是图片的数量*510
+		//如果 newLeft < =  图片的数量* 510 另newLeft = 0;重新轮播
+		function move(obj ,target , speed ,imgArr, allSpan,index){
+			clearInterval(obj.timer);
+			var  current =  parseInt(getStyle(obj , "left"));
+			speed = - speed;
+			obj.timer = setInterval(function(){
+			//获取当前的left值
+			var oldLeft = parseInt(getStyle(obj ,"left"));
+			//alert(oldLeft);
+			//newLeft 应该是oldLeft +  移动的speed
+			var newLeft = oldLeft+speed;
+			//如果newLeft 等于小于目标位置的left 值时  另它 = 0  重新轮播
+			if (newLeft<=target ) {
+				newLeft = 0;
+			}
+			obj.style.left = newLeft+"px";
+			//自动播放时设置span颜色
+			index++;
+			index %=imgArr.length;
+			setSpan(allSpan,index);
+
+			},2000);
+		}
+			
+		function getStyle(obj,name){
+		//  var obj = document.getElementById("list");
+		  return getComputedStyle(obj,null)[name];
+
+		}
+
+		//鼠标悬停 轮播停止 鼠标离开 轮播开始
+		function enterOrleave(obj,imgList,target,imgArr,allSpan,index){
+			obj.onmouseenter = function(){
+				clearInterval(imgList.timer);
+			}
+			obj.onmouseleave = function(){
+				move(imgList,target,1290,imgArr,allSpan,index);
+
+			}
+		}
+
+
+				//修改选中的点颜色
+			function  setSpan(allSpan,index){
+				for (var i = 0 ;i <allSpan.length ;i++ )
+				{
+					allSpan[i].style.backgroundColor ="";
+				}
+				allSpan[index].style.backgroundColor  = "black";
+			}
+			
+	
+	</script>
+ </head>
+ <body>
+	<div id="top">
+		<div class="nav_box" id="nav_box">
+			<ul>
+				<li><a href="#">网站首页</a></li> 
+				<li><a href="#">留言墙</a></li>
+			    <li><a href="#">视频</a></li>
+				<li><a href="#">十年寄语</a></li>
+				<li><a href="#">个人空间</a></li>
+			</ul>
+		</div>
+
+	</div>
+	
+	<!-- 滚动图片 -->
+	<div id="banner" >
+		<div class="banner_imgbox" id="banner_imgbox">
+			<ul id="list">
+				<li><img src="./img/1.jpg"   /></li>
+				<li><img src="./img/2.jpg"   /></li>
+				<li><img src="./img/3.jpg"  /></li>
+				<li><img src="./img/4.jpg"  /></li>
+				<li><img src="./img/5.jpg"  /></li>
+
+			</ul>
+		<div class="buttons" id="buttons">
+			<span></span>
+			<span></span>
+			<span></span>
+			<span></span>
+			<span></span>
+		</div>
+	
+				<a href="javascript:;" rel="external nofollow"  id="arrow_left" class="arrow">< </a>
+				<a href="javascript:;" rel="external nofollow"  id="arrow_right" class="arrow">></a>
+		
+		</div>
+	</div>
+
+     <div class="video">
+			<ul id="video_list">
+				<li><video src="http://119.188.193.86/vlive.qqvideo.tc.qq.com/AQnAFwDpQrF-3yoSsuC8KxRXAoZIMWGMW_qnMrhslTxo/q0200p8w0qr.p201.1.mp4?fmt=shd&vkey=32892EC9B45941343759F3F1EF97A0F485B3C614D93192342C9024890870AFD127CD74EA8A6D72EA6E87A829FBB63D7DA99E5B24954D03F80F317E537E4DE024A979E7B5ADBE62CB7A275F20B799429C6356575EBA680B70BD6C33F226981114B9D4E447BB69FCC4BCB05BA052E26DC31A3C512755D7ED05&sdtfrom=&level=0&platform=10201&locid=df14ae5a-efc0-4f7c-a630-f377986dbb18&size=5111155&ocid=289477548" controls="controls" ></video></li>
+				<li><video src="" controls="controls"></video></li>
+				<li><video src="" controls="controls"></video></li>
+				<li><video src="" controls="controls"></video></li>
+				
+				<li><video src="" controls="controls"></video></li>
+				<li><video src="" controls="controls"></video></li>
+				<li><video src="" controls="controls"></video></li>
+				<li><video src="" controls="controls"></video></li>
+			</ul>
+	 </div>
+	  <div class="text" >
+	  <h1><span>陪伴，是最长情的告白</span></h1>
+	  </br></br>
+	  </div>
+		
+	<div class="audio">
+	  <audio controls="controls" autoplay="autoplay" preload="auto" loop="true">
+		 <source src="audio.mp3" type="audio/mp3" />
+		 <source src="audio.mp3" type="audio/mpeg"/>
+	  </audio>
+	</div>
+	 
+		
+ </body>
+</html>
