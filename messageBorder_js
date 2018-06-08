@@ -1,0 +1,7 @@
+$(document).ready(function(){
+	$('#button').click(function(){
+		var headLine = $('#headLine').val();
+		var textArea = $('#comment').val();
+	$('#ul').append("<li><a href='javascript:;'><h2>"+headLine+"</h2><p>"+textArea+"</p></a></li>");
+	})
+})
